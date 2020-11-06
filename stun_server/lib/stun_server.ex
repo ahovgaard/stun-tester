@@ -1,8 +1,4 @@
 defmodule StunServer do
-  @moduledoc """
-  Documentation for `StunServer`.
-  """
-
   use GenServer
 
   def start_link(args) do

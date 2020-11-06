@@ -22,8 +22,7 @@ defmodule StunClient.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:stun, "~> 1.0"},
-      {:poolboy, "~> 1.5.2"}
+      {:stun, "~> 1.0"}
     ]
   end
 end

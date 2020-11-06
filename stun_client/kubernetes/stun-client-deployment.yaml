@@ -1,28 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: stun-server
+  name: stun-client
 spec:
   selector:
     matchLabels:
-      app: stun-server
-  replicas: 1
+      app: stun-client
+  replicas: 5
   template:
     metadata:
       labels:
-        app: stun-server
+        app: stun-client
     spec:
       containers:
-      - name: stun-server
-        image: ahovgaard/stun-server:0.1.2
+      - name: stun-client
+        image: ahovgaard/stun-client:0.1.7
         imagePullPolicy: Always
+        env:
+        - name: STUN_SERVER_IP
+          value: "13.70.200.12"
+        - name: STUN_SERVER_PORT
+          value: "3478"
+        - name: STUN_CLIENT_COUNT
+          value: "1000"
         resources:
           limits:
             cpu: "2.00"
-            memory: "512Mi"
+            memory: "2048Mi"
           requests:
             cpu: "2.00"
-            memory: "512Mi"
+            memory: "2048Mi"
         readinessProbe:
           exec:
             command:

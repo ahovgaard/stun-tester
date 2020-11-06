@@ -1,6 +1,5 @@
 %{
   "fast_tls": {:hex, :fast_tls, "1.1.8", "d8f78d433b7cfae0548c2bc00b9ca4f9644ba894834ae34a0d2b39c8c97a316b", [:rebar3], [{:p1_utils, "1.0.20", [hex: :p1_utils, repo: "hexpm", optional: false]}], "hexpm", "6cca3c9b14c2bcacbeb271959adc9f655707b301b7a483438c77c20068121668"},
   "p1_utils": {:hex, :p1_utils, "1.0.20", "559313c0ea267a646317fd122cdfbb041db86b1ed00df91902fd273ce08d4a45", [:rebar3], [], "hexpm", "0b2c98edfe3e82dd49b287a70913f265e09eb630e40774bee88e0a9f06b0c061"},
-  "poolboy": {:hex, :poolboy, "1.5.2", "392b007a1693a64540cead79830443abf5762f5d30cf50bc95cb2c1aaafa006b", [:rebar3], [], "hexpm", "dad79704ce5440f3d5a3681c8590b9dc25d1a561e8f5a9c995281012860901e3"},
   "stun": {:hex, :stun, "1.0.38", "a1d2eb64e5979e7c101a32fab622d9d0fec7fbad657962843da79ea01031398e", [:rebar3], [{:fast_tls, "1.1.8", [hex: :fast_tls, repo: "hexpm", optional: false]}, {:p1_utils, "1.0.20", [hex: :p1_utils, repo: "hexpm", optional: false]}], "hexpm", "b5dacf5cf321e4b0916cec438a19ff9482877692d7f6f274898ff1741f9ca14f"},
 }

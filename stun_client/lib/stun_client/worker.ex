@@ -3,12 +3,9 @@ defmodule StunClient.Worker do
   require Record
   require Logger
 
-  @stun_server_ip       {13, 70, 200, 12}
-  @stun_server_port     3478
-
   @stun_interval        :timer.seconds(10)
   @stun_request_timeout :timer.seconds(5)
-  @stun_retry_count     2
+  @stun_retry_count     5
 
   Record.defrecord(:stun, Record.extract(:stun, from_lib: "stun/include/stun.hrl"))
 
@@ -17,20 +14,32 @@ defmodule StunClient.Worker do
   end
 
   @impl true
-  def init(_args) do
+  def init(args) do
+    state = %{
+      server_ip:   Keyword.get(args, :server_ip),
+      server_port: Keyword.get(args, :server_port),
+      socket:      nil,
+      local_port:  nil,
+      fail_count:  0,
+      prev_trid:   nil,
+      mapped_ip:   nil,
+      mapped_port: nil
+    }
+    {:ok, state, {:continue, :init}}
+  end
+
+  @impl true
+  def handle_continue(:init, state) do
+    :timer.sleep(:rand.uniform(@stun_interval))
+
     %{socket: socket, port: port} = open_stun_port()
     Logger.info("Opened STUN local port #{port}")
 
     schedule_reopen()
     {:ok, _tref} = :timer.send_interval(@stun_interval, :send_request)
 
-    state = %{
-      socket: socket,
-      local_port: port,
-      fail_count: 0,
-      prev_trid: nil
-    }
-    {:ok, state}
+    new_state = %{state | socket: socket, local_port: port}
+    {:noreply, new_state}
   end
 
   @impl true
@@ -56,7 +65,7 @@ defmodule StunClient.Worker do
 
     req = stun(method: 0x01, class: :request, trid: trid)
     bin = :stun_codec.encode(req)
-    :ok = :gen_udp.send(socket, @stun_server_ip, @stun_server_port, bin)
+    :ok = :gen_udp.send(socket, state.server_ip, state.server_port, bin)
 
     case :gen_udp.recv(socket, 0, @stun_request_timeout) do
       {:ok, {from_ip, from_port, resp_bin}} ->
@@ -66,30 +75,27 @@ defmodule StunClient.Worker do
         {mapped_ip, mapped_port} = stun(resp, :'XOR-MAPPED-ADDRESS')
         received_trid = stun(resp, :trid)
 
-        Logger.info("Received STUN response from #{format_ip_port from_ip, from_port
+        Logger.info("Received STUN response from #{format_ip_port(from_ip, from_port)
                     } with mapped address #{format_ip_port(mapped_ip, mapped_port)
                     } with TrID \"#{format_trid(received_trid)}\"")
 
-        {:noreply, %{state | fail_count: 0}}
+        {:noreply, %{state | fail_count: 0, mapped_ip: mapped_ip, mapped_port: mapped_port}}
 
       {:error, reason} ->
         new_fail_count = fail_count + 1
         if new_fail_count >= @stun_retry_count do
           Logger.error("Failed to receive #{new_fail_count
                        } consecutive STUN response for TrID \"#{format_trid(trid)
-                       }\", reason: #{inspect reason}")
+                       }\", mapped addr: #{format_ip_port(state.mapped_ip, state.mapped_port)
+                       }, reason: #{inspect reason}")
           new_state = reopen_socket(state)
           {:noreply, new_state}
         else
-          Logger.warn("Failed to receive STUN response for TrID \"#{format_trid(trid)}\"")
+          Logger.warn("Failed to receive STUN response for TrID \"#{format_trid(trid)
+                      }\", mapped addr: #{format_ip_port(state.mapped_ip, state.mapped_port)}")
           {:noreply, %{state | fail_count: new_fail_count, prev_trid: trid}}
         end
     end
-  end
-
-  def handle_info(msg, state) do
-    Logger.warn("Received unexpected #{inspect msg} in state #{inspect state}")
-    {:noreply, state}
   end
 
   #
@@ -124,5 +130,8 @@ defmodule StunClient.Worker do
 
   defp format_ip_port({ip1, ip2, ip3, ip4}, port) do
     "#{ip1}.#{ip2}.#{ip3}.#{ip4}:#{port}"
+  end
+  defp format_ip_port(ip, port) do
+    "#{ip}:#{port}"
   end
 end
