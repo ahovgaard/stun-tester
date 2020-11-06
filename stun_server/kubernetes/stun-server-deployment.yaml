@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stun-server
+spec:
+  selector:
+    matchLabels:
+      app: stun-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: stun-server
+    spec:
+      containers:
+      - name: stun-server
+        image: ahovgaard/stun-server:0.1.1
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: "0.50"
+            memory: "256Mi"
+          requests:
+            cpu: "0.50"
+            memory: "256Mi"
+        readinessProbe:
+          exec:
+            command:
+            - /bin/true
+        livenessProbe:
+          exec:
+            command:
+            - /bin/true
+      securityContext:
+        runAsUser: 1000

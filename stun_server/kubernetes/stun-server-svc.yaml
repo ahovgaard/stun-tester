@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: stun-server-svc
+spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  ports:
+  - name: stun-port
+    port: 3478
+    protocol: UDP
+  selector:
+    app: stun-server
