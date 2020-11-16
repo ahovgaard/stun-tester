@@ -22,7 +22,8 @@ defmodule StunClient.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:stun, "~> 1.0"}
+      {:stun, "~> 1.0"},
+      {:gen_state_machine, "~> 3.0.0"}
     ]
   end
 end
