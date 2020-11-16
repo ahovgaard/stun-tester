@@ -7,7 +7,7 @@ defmodule StunClient.Application do
 
   def start(_type, _args) do
     children = [
-      StunClient.Pool,
+      StunClient.Pool
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

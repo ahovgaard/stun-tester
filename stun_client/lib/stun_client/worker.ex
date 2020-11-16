@@ -1,13 +1,15 @@
 defmodule StunClient.Worker do
   use GenServer
-  require Record
   require Logger
+
+  alias StunClient.Stun
 
   @stun_interval        :timer.seconds(10)
   @stun_request_timeout :timer.seconds(5)
   @stun_retry_count     5
 
-  Record.defrecord(:stun, Record.extract(:stun, from_lib: "stun/include/stun.hrl"))
+  @stun_reset_interval        :timer.minutes(2)
+  @stun_reset_interval_random 60
 
   def start_link(args) do
     GenServer.start_link(__MODULE__, args)
@@ -63,17 +65,16 @@ defmodule StunClient.Worker do
 
     Logger.info("Sending STUN request with TrID \"#{format_trid(trid)}\"")
 
-    req = stun(method: 0x01, class: :request, trid: trid)
-    bin = :stun_codec.encode(req)
+    req = Stun.make_stun_request(trid)
+    bin = Stun.encode(req)
     :ok = :gen_udp.send(socket, state.server_ip, state.server_port, bin)
 
     case :gen_udp.recv(socket, 0, @stun_request_timeout) do
       {:ok, {from_ip, from_port, resp_bin}} ->
 
-        {:ok, resp} = :stun_codec.decode(resp_bin, :datagram)
-
-        {mapped_ip, mapped_port} = stun(resp, :'XOR-MAPPED-ADDRESS')
-        received_trid = stun(resp, :trid)
+        {:ok, resp} = Stun.decode(resp_bin)
+        {mapped_ip, mapped_port} = Stun.get_mapped_address(resp)
+        received_trid = Stun.get_transaction_id(resp)
 
         Logger.info("Received STUN response from #{format_ip_port(from_ip, from_port)
                     } with mapped address #{format_ip_port(mapped_ip, mapped_port)
@@ -103,7 +104,8 @@ defmodule StunClient.Worker do
   #
 
   defp schedule_reopen do
-    socket_reopen_interval = :timer.minutes(2) + :timer.seconds(:rand.uniform(60))
+    socket_reopen_interval =
+      :timer.minutes(@stun_reset_interval) + :timer.seconds(:rand.uniform(@stun_reset_interval_random))
     :timer.send_after(socket_reopen_interval, :reopen_socket)
   end
 

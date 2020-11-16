@@ -1,4 +1,4 @@
 use Mix.Config
 
 config :logger,
-  level: :warning
+  level: if(Mix.env() == :prod, do: :warning, else: :debug)
