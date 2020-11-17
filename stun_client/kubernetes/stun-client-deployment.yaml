@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: stun-client
-        image: ahovgaard/stun-client:0.1.7
+        image: ahovgaard/stun-client:0.1.11
         imagePullPolicy: Always
         env:
         - name: STUN_SERVER_IP

@@ -13,4 +13,4 @@ RUN mix local.hex --force && \
     mix local.rebar --force && \
     MIX_ENV=prod mix compile
 
-CMD mix run --no-halt
+CMD MIX_ENV=prod mix run --no-halt

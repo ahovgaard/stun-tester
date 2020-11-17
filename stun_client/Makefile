@@ -1,4 +1,4 @@
-version = 0.1.7
+version = 0.1.11
 
 .PHONY: deploy
 deploy: build-docker push-docker

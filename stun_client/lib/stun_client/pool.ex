@@ -23,7 +23,7 @@ defmodule StunClient.Pool do
   end
 
   defp worker_spec(id, worker_args) do
-    child_spec = {StunClient.Worker, worker_args}
+    child_spec = {StunClient.Worker, [{:client_id, id} | worker_args]}
     Supervisor.child_spec(child_spec, id: id)
   end
 
