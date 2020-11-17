@@ -1,4 +1,4 @@
-defmodule StunClient.FsmWorker do
+defmodule StunClient.Worker do
   use GenStateMachine
   require Logger
 
