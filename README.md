@@ -4,25 +4,26 @@ This repository contains a simple STUN server and a STUN client test tool used
 to debug issues with lost STUN response on Microsoft Azure. Specifically,
 multiple consecutive STUN responses are sent from an AKS cluster and are
 observed on the network capture from the AKS virtual machine node, but they
-never reaches the STUN client.
+never reach the STUN client.
 
 ## Deploying the STUN server
 
 To deploy the STUN server, first switch context to your AKS cluster where the
-server should run. Then update the `loadBalancerIP` in
-`stun_server/kubernetes/stun-server-svc.yaml`. If you already have a static IP,
-you can use that one, otherwise, you can remove the line and let AKS assign it a
-public IP address. Then you can deploy the STUN server deployment and service:
+server should run. Then update the `loadBalancerIP` in the [service
+manifest](stun_server/kubernetes/stun-server-svc.yaml). If you already have a
+static IP, you can use that one, otherwise, you can remove the line and let AKS
+assign it a public IP address. Then you can deploy the STUN server deployment
+and service:
 
     kubectl create -f stun_server/kubernetes
 
 ## Deploying the STUN client test tool
 
 First switch context to the intended AKS cluster. Then update the
-`STUN_SERVER_IP` environment variable in
-`stun_client/kubernetes/stun-client-deployment.yaml` to match the public IP
-given to the STUN server. Then you can deploy the STUN server deployment and
-service:
+`STUN_SERVER_IP` environment variable in the [deployment
+manifest](stun_client/kubernetes/stun-client-deployment.yaml) to match the
+public IP given to the STUN server. Then you can deploy the STUN server
+deployment and service:
 
     kubectl create -f stun_client/kubernetes
 
@@ -59,7 +60,7 @@ Examining the captures and filtering on the failed transactions ID from the logs
 
     frame contains 29:AD:0C:44:83:68:50:64:38:4D:4D:B0
 
-we observe that the server sends all 5 STUN responses, but none of them reached
+we observe that the server sent all 5 STUN responses, but none of them reached
 the client. The server capture:
 
 ![Server network capture](server_capture.png)
