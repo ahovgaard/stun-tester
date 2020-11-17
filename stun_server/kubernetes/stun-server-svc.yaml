@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: stun-server-svc
 spec:
-  loadBalancerIP: 13.74.30.216
+  loadBalancerIP: 13.70.200.12
   externalTrafficPolicy: Local
   type: LoadBalancer
   ports:
