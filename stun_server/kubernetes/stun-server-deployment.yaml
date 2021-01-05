@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: stun-server
-        image: ahovgaard/stun-server:0.1.3
+        image: ahovgaard/stun-server:0.1.4
         imagePullPolicy: Always
         env:
         - name: LOG_LEVEL
@@ -26,13 +26,3 @@ spec:
           requests:
             cpu: "2.00"
             memory: "512Mi"
-        readinessProbe:
-          exec:
-            command:
-            - /bin/true
-        livenessProbe:
-          exec:
-            command:
-            - /bin/true
-      securityContext:
-        runAsUser: 1000

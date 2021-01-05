@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: stun-client
-        image: ahovgaard/stun-client:0.1.12
+        image: ahovgaard/stun-client:0.1.13
         imagePullPolicy: Always
         env:
         - name: STUN_SERVER_IP
@@ -32,13 +32,3 @@ spec:
           requests:
             cpu: "2.00"
             memory: "2048Mi"
-        readinessProbe:
-          exec:
-            command:
-            - /bin/true
-        livenessProbe:
-          exec:
-            command:
-            - /bin/true
-      securityContext:
-        runAsUser: 1000
