@@ -4,7 +4,7 @@ defmodule StunClient.MixProject do
   def project do
     [
       app: :stun_client,
-      version: "0.1.0",
+      version: "0.1.11",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       deps: deps()
