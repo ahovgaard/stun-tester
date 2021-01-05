@@ -49,6 +49,12 @@ Eventually, you might see an output like:
     14:51:19.052 [warn]  Client 474: Failed to receive STUN response for TrID "29:AD:0C:44:83:68:50:64:38:4D:4D:B0", mapped addr: :
     14:51:29.053 [error] Client 474: Failed to receive 5 consecutive STUN response for TrID "29:AD:0C:44:83:68:50:64:38:4D:4D:B0", mapped addr: :
 
+## Log level
+
+The log level for each deployment can be changed by updating the `LOG_LEVEL`
+environment variable in the deployment manifest to one of `debug`, `info`,
+`warning`, or `error`.
+
 ## Network captures
 
 In the test where the above logs came from, network captures were taken on the
