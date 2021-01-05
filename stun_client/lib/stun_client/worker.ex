@@ -15,10 +15,12 @@ defmodule StunClient.Worker do
 
   @impl true
   def init(args) do
+    client_id = Keyword.get(args, :client_id)
+    Logger.debug("Starting client #{client_id}")
     data = %{
       server_ip:   Keyword.get(args, :server_ip),
       server_port: Keyword.get(args, :server_port),
-      client_id:   Keyword.get(args, :client_id),
+      client_id:   client_id,
       socket:      nil,
       local_port:  nil,
       fail_count:  0,

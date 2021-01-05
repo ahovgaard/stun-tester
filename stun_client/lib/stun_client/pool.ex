@@ -18,7 +18,12 @@ defmodule StunClient.Pool do
     num_clients = get_int_env("STUN_CLIENT_COUNT")
 
     worker_args = [server_ip: server_ip, server_port: server_port]
-    children = Enum.map(1..num_clients, &(worker_spec(&1, worker_args)))
+    children =
+      if num_clients > 0 do
+        Enum.map(1..num_clients, &(worker_spec(&1, worker_args)))
+      else
+        []
+      end
     Supervisor.init(children, strategy: :one_for_one)
   end
 
