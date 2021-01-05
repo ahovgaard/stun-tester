@@ -6,6 +6,11 @@ defmodule StunServer.Application do
   use Application
 
   def start(_type, _args) do
+    case System.fetch_env("LOG_LEVEL") do
+      {:ok, level} -> Logger.configure(level: String.to_existing_atom(level))
+      :error       -> :ok
+    end
+
     children = [
       StunServer
     ]
