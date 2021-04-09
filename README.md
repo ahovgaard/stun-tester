@@ -1,10 +1,12 @@
 # STUN tester
 
 This repository contains a simple STUN server and a STUN client test tool used
-to debug issues with lost STUN response on Microsoft Azure. Specifically,
+to debug issues with lost STUN responses on Microsoft Azure. Specifically,
 multiple consecutive STUN responses are sent from an AKS cluster and are
 observed on the network capture from the AKS virtual machine node, but they
 never reach the STUN client.
+
+See this [AKS GitHub issue](https://github.com/Azure/AKS/issues/2250).
 
 ## Deploying the STUN server
 
